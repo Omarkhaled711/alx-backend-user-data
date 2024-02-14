@@ -20,7 +20,7 @@ class Auth:
                 if len(excluded) == 0:
                     continue
                 if (excluded[-1] == '*'):
-                    excluded.pop()
+                    excluded = excluded[:-1]
                 if path == excluded or path.startswith(excluded):
                     return False
         return True
