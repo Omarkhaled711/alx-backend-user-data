@@ -38,13 +38,10 @@ def register_user() -> str:
 @app.route('/sessions', methods=['POST'])
 def login() -> str:
     """
-    login a  user using email and password
+    login a user using email and password
     """
-    try:
-        email = request.form['email']
-        password = request.form['password']
-    except KeyError:
-        abort(400)
+    email = request.form.get('email', "")
+    password = request.form.get('password', "")
     if not auth.valid_login(email, password):
         abort(401)
 
