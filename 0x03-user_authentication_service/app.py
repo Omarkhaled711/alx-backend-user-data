@@ -62,7 +62,7 @@ def logout() -> str:
     session_id = request.cookies.get("session_id", None)
     user = AUTH.get_user_from_session_id(session_id)
 
-    if user is None:
+    if session_id is None or user is None:
         abort(403)
     AUTH.destroy_session(user.id)
     return redirect('/')
@@ -76,15 +76,14 @@ def profile() -> str:
     {"email": "<user email>"}
     """
     session_id = request.cookies.get("session_id", None)
-
     user = AUTH.get_user_from_session_id(session_id)
-    if user is None:
+    if session_id is None or user is None:
         abort(403)
 
     return jsonify({"email": user.email}), 200
 
 
-@app.route('/reset_password')
+@app.route('/reset_password', methods=['POST'])
 def reset_password() -> str:
     """
     If the email is not registered, respond with a 403 status code.
