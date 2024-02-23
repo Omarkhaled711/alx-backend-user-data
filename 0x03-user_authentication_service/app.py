@@ -2,8 +2,9 @@
 """
 Flask app
 """
-from flask import Flask, jsonify, request, abort, redirect
 from auth import Auth
+from flask import Flask, jsonify, request, abort, redirect
+from flask.helpers import make_response
 
 app = Flask(__name__)
 auth = Auth()
@@ -48,8 +49,9 @@ def login() -> str:
     msg = {"email": email, "message": "logged in"}
     json_msg = jsonify(msg)
     session_id = auth.create_session(email)
-    json_msg.set_cookie("session_id", session_id)
-    return json_msg
+    response = make_response(msg)
+    response.set_cookie('session_id', session_id)
+    return response
 
 
 @app.route('/sessions', methods=['DELETE'])
