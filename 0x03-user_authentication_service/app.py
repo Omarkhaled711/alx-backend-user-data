@@ -49,7 +49,7 @@ def login() -> str:
     msg = {"email": email, "message": "logged in"}
     json_msg = jsonify(msg)
     session_id = auth.create_session(email)
-    response = make_response(msg)
+    response = make_response(json_msg)
     response.set_cookie('session_id', session_id)
     return response
 
