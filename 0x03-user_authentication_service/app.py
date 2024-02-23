@@ -7,7 +7,7 @@ from flask import Flask, jsonify, request, abort, redirect
 from flask.helpers import make_response
 
 app = Flask(__name__)
-auth = Auth()
+AUTH = Auth()
 
 
 @app.route('/')
@@ -30,7 +30,7 @@ def register_user() -> str:
         abort(400)
 
     try:
-        user = auth.register_user(email, password)
+        user = AUTH.register_user(email, password)
         return jsonify({"email": email, "message": "user created"})
     except ValueError:
         return jsonify({"message": "email already registered"}), 400
@@ -43,12 +43,12 @@ def login() -> str:
     """
     email = request.form.get('email', "")
     password = request.form.get('password', "")
-    if not auth.valid_login(email, password):
+    if not AUTH.valid_login(email, password):
         abort(401)
 
     msg = {"email": email, "message": "logged in"}
     json_msg = jsonify(msg)
-    session_id = auth.create_session(email)
+    session_id = AUTH.create_session(email)
     response = make_response(json_msg)
     response.set_cookie('session_id', session_id)
     return response
@@ -60,11 +60,11 @@ def logout() -> str:
     logout the user, and redirect to /
     """
     session_id = request.cookies.get("session_id", None)
-    user = auth.get_user_from_session_id(session_id)
+    user = AUTH.get_user_from_session_id(session_id)
 
     if user is None:
         abort(403)
-    auth.destroy_session(user.id)
+    AUTH.destroy_session(user.id)
     return redirect('/')
 
 
@@ -77,7 +77,7 @@ def profile() -> str:
     """
     session_id = request.cookies.get("session_id", None)
 
-    user = auth.get_user_from_session_id(session_id)
+    user = AUTH.get_user_from_session_id(session_id)
     if user is None:
         abort(403)
 
@@ -98,7 +98,7 @@ def reset_password() -> str:
     except KeyError:
         abort(403)
     try:
-        reset_token = auth.get_reset_password_token(email)
+        reset_token = AUTH.get_reset_password_token(email)
         return jsonify({"email": email, "reset_token": reset_token}), 200
     except ValueError:
         abort(403)
@@ -121,7 +121,7 @@ def update_password() -> str:
         abort(400)
 
     try:
-        auth.update_password(reset_token, new_password)
+        AUTH.update_password(reset_token, new_password)
         return jsonify({"email": email, "message": "Password updated"}), 200
     except ValueError:
         abort(403)
