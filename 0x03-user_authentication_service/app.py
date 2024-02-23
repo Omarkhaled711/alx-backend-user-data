@@ -24,12 +24,12 @@ def register_user() -> str:
     """
     try:
         email = request.form['email']
-        pswd = request.form['password']
+        password = request.form['password']
     except KeyError:
         abort(400)
 
     try:
-        user = auth.register_user(email, pswd)
+        user = auth.register_user(email, password)
         return jsonify({"email": email, "message": "user created"})
     except ValueError:
         return jsonify({"message": "email already registered"}), 400
@@ -42,10 +42,10 @@ def login() -> str:
     """
     try:
         email = request.form['email']
-        pswd = request.form['password']
+        password = request.form['password']
     except KeyError:
         abort(400)
-    if not auth.valid_login(email, pswd):
+    if not auth.valid_login(email, password):
         abort(401)
 
     msg = {"email": email, "message": "logged in"}
@@ -117,12 +117,12 @@ def update_password() -> str:
     try:
         email = request.form['email']
         reset_token = request.form['reset_token']
-        new_pswd = request.form['new_password']
+        new_password = request.form['new_password']
     except KeyError:
         abort(400)
 
     try:
-        auth.update_password(reset_token, new_pswd)
+        auth.update_password(reset_token, new_password)
         return jsonify({"email": email, "message": "Password updated"}), 200
     except ValueError:
         abort(403)
