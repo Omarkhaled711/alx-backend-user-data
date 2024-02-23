@@ -11,7 +11,7 @@ from user import User
 from uuid import uuid4
 
 
-def _hash_password(pswd: str):
+def _hash_password(pswd: str) -> str:
     """
     A method that takes in a password string arguments and
     returns bytes.

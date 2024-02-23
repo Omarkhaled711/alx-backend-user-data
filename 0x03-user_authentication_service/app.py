@@ -9,15 +9,15 @@ app = Flask(__name__)
 auth = Auth()
 
 
-@app.route('/', strict_slashes=False)
+@app.route('/')
 def home() -> str:
     """
-    returns a JSON payload 
+    returns a JSON payload
     """
     return jsonify({"message": "Bienvenue"})
 
 
-@app.route('/users', methods=['POST'], strict_slashes=False)
+@app.route('/users', methods=['POST'])
 def register_user() -> str:
     """
     Register a new user
@@ -35,7 +35,7 @@ def register_user() -> str:
         return jsonify({"message": "email already registered"}), 400
 
 
-@app.route('/sessions', methods=['POST'], strict_slashes=False)
+@app.route('/sessions', methods=['POST'])
 def login() -> str:
     """
     login a  user using email and password
@@ -55,7 +55,7 @@ def login() -> str:
     return json_msg
 
 
-@app.route('/sessions', methods=['DELETE'], strict_slashes=False)
+@app.route('/sessions', methods=['DELETE'])
 def logout() -> str:
     """
     logout the user, and redirect to /
@@ -69,7 +69,7 @@ def logout() -> str:
     return redirect('/')
 
 
-@app.route('/profile', methods=['GET'], strict_slashes=False)
+@app.route('/profile', methods=['GET'])
 def profile() -> str:
     """
     find the user. If the user exist, respond with a 200
@@ -85,7 +85,7 @@ def profile() -> str:
     return jsonify({"email": user.email}), 200
 
 
-@app.route('/reset_password', methods=['POST'])
+@app.route('/reset_password')
 def reset_password() -> str:
     """
     If the email is not registered, respond with a 403 status code.
@@ -105,7 +105,7 @@ def reset_password() -> str:
         abort(403)
 
 
-@app.route('/reset_password', methods=['PUT'], strict_slashes=False)
+@app.route('/reset_password', methods=['PUT'])
 def update_password() -> str:
     """
     Update the password. If the token is invalid, catch the exception
