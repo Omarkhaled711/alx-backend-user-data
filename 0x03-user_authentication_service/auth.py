@@ -16,7 +16,7 @@ def _hash_password(pswd: str) -> str:
     A method that takes in a password string arguments and
     returns bytes.
     """
-    return bcrypt.hashpw(pswd.encode(), bcrypt.gensalt())
+    return bcrypt.hashpw(pswd.encode('utf-8'), bcrypt.gensalt())
 
 
 def _generate_uuid() -> str:
