@@ -11,12 +11,12 @@ from user import User
 from uuid import uuid4
 
 
-def _hash_password(pswd: str) -> str:
+def _hash_password(password: str) -> str:
     """
     A method that takes in a password string arguments and
     returns bytes.
     """
-    return bcrypt.hashpw(pswd.encode('utf-8'), bcrypt.gensalt())
+    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
 
 def _generate_uuid() -> str:
@@ -34,7 +34,7 @@ class Auth:
         """
         self._db = DB()
 
-    def register_user(self, email: str, pswd: str) -> User:
+    def register_user(self, email: str, password: str) -> User:
         """
         register a new user
         """
@@ -42,16 +42,16 @@ class Auth:
             not_new_user = self._db.find_user_by(email=email)
             raise ValueError(f"User {email} already exists")
         except NoResultFound:
-            hashed_pswd = _hash_password(pswd)
-            return self._db.add_user(email, hashed_pswd)
+            hashed_password = _hash_password(password)
+            return self._db.add_user(email, hashed_password)
 
-    def valid_login(self, email: str, pswd: str) -> bool:
+    def valid_login(self, email: str, password: str) -> bool:
         """
         checks if email, and password are valid
         """
         try:
             user = self._db.find_user_by(email=email)
-            if bcrypt.checkpw(pswd.encode(), user.hashed_password):
+            if bcrypt.checkpw(password.encode(), user.hashed_password):
                 return True
             return False
         except NoResultFound:
@@ -103,18 +103,18 @@ class Auth:
         except NoResultFound:
             raise ValueError
 
-    def update_password(self, reset_token: str, pswd: str) -> None:
+    def update_password(self, reset_token: str, password: str) -> None:
         """
         update the user’s hashed_password field with the new
         hashed password and the reset_token field to None.
         """
-        if reset_token is None or pswd is None:
+        if reset_token is None or password is None:
             return None
         try:
             user = self._db.find_user_by(reset_token=reset_token)
-            hashed_pswd = _hash_password(pswd)
+            hashed_password = _hash_password(password)
             self._db.update_user(user.id,
-                                 hashed_password=hashed_pswd,
+                                 hashed_password=hashed_password,
                                  reset_token=None)
         except NoResultFound:
             raise ValueError
